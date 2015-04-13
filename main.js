@@ -89,7 +89,7 @@
     var vanishing_point_mouse = false;
     var axis_mouse = false;
     // Create dat GUI
-    var gui = new dat.GUI({ autoPlace: true });
+    var gui = new dat.GUI({ autoPlace: true, width: 275 });
     function addGUI () {
         gui.domElement.parentNode.style.zIndex = 5;
         window.gui = gui;
@@ -97,7 +97,7 @@
         folder.open(); // this just points the arrow downward
         // Styles
         gui.add(controls, 'Perspective');
-        gui.add(controls, 'focal_length', 0, 5).name("focal_length").onChange(function(value) {
+        gui.add(controls, 'focal_length', 0.1, 5).name("focal_length").onChange(function(value) {
             if (scene.camera.type != "perspective") Perspective();
             scene.camera.focal_length = value;
             scene.requestRedraw();
@@ -114,8 +114,9 @@
         });
         gui.add(controls, 'vanishing_point_toggle').name("mouse control").onChange(function(value) {
             if (value && scene.camera.type != "perspective") {
-                Perspective();
                 gui.__controllers[8].setValue(false);
+                Perspective();
+                scene.camera.focal_length = gui.__controllers[1].getValue();
             }
             vanishing_point_mouse = value;
         });
@@ -132,8 +133,8 @@
         });
         gui.add(controls, 'axis_toggle').name("mouse control").onChange(function(value) {
             if (value && scene.camera.type != "isometric") {
-                Isometric();
                 gui.__controllers[4].setValue(false);
+                Isometric();
             }
             axis_mouse = value;
         });
@@ -151,11 +152,12 @@
         var y = e.clientY;
         var xpos = ((x - (width / 2)));
         var ypos = ((y - (height / 2)))*-1.;
+        console.log("width:", width, "x:", x, "xpos:", xpos);
 
         if (vanishing_point_mouse) {
             scene.camera.vanishing_point = [xpos,ypos];
-            gui.__controllers[4].setValue(scene.camera.vanishing_point[0]);
-            gui.__controllers[5].setValue(scene.camera.vanishing_point[1]);
+            gui.__controllers[2].setValue(scene.camera.vanishing_point[0]);
+            gui.__controllers[3].setValue(scene.camera.vanishing_point[1]);
             scene.requestRedraw();
         }
         if (axis_mouse) {
