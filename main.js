@@ -96,23 +96,23 @@
         var folder = gui.addFolder("Click a style:");
         folder.open(); // this just points the arrow downward
         // Styles
-        gui.add(controls, 'Perspective');
-        gui.add(controls, 'focal_length', 0.1, 5).name("focal_length").onChange(function(value) {
+        gui.add(controls, 'Perspective').name("Perspective Camera");
+        gui.add(controls, 'focal_length', 0.1, 5).name("&nbsp;&nbsp;focal_length").onChange(function(value) {
             if (scene.camera.type != "perspective") Perspective();
             scene.camera.focal_length = value;
             scene.requestRedraw();
         });
-        gui.add(controls, 'vanishing_point_x', -1000, 1000).name("vanishing_point x").onChange(function(value) {
+        gui.add(controls, 'vanishing_point_x', -1000, 1000).name("&nbsp;&nbsp;vanishing_point x").onChange(function(value) {
             if (scene.camera.type != "perspective") Perspective();
             scene.camera.vanishing_point[0] = value;
             scene.requestRedraw();
         });
-        gui.add(controls, 'vanishing_point_y', -1000, 1000).name("vanishing_point y").onChange(function(value) {
+        gui.add(controls, 'vanishing_point_y', -1000, 1000).name("&nbsp;&nbsp;vanishing_point y").onChange(function(value) {
             if (scene.camera.type != "perspective") Perspective();
             scene.camera.vanishing_point[1] = value;
             scene.requestRedraw();
         });
-        gui.add(controls, 'vanishing_point_toggle').name("mouse control").onChange(function(value) {
+        gui.add(controls, 'vanishing_point_toggle').name("&nbsp;&nbsp;mouse control").onChange(function(value) {
             if (value && scene.camera.type != "perspective") {
                 gui.__controllers[8].setValue(false);
                 Perspective();
@@ -120,25 +120,27 @@
             }
             vanishing_point_mouse = value;
         });
-        gui.add(controls, 'Isometric');
-        gui.add(controls, 'axis_x', -5, 5).name("axis x").onChange(function(value) {
+        gui.add(controls, 'Isometric').name("Isometric Camera");
+        gui.add(controls, 'axis_x', -5, 5).name("&nbsp;&nbsp;axis x").onChange(function(value) {
             if (scene.camera.type != "isometric") Isometric();
             scene.camera.axis.x = value;
             scene.requestRedraw();
         });
-        gui.add(controls, 'axis_y', -5, 5).name("axis y").onChange(function(value) {
+        gui.add(controls, 'axis_y', -5, 5).name("&nbsp;&nbsp;axis y").onChange(function(value) {
             if (scene.camera.type != "isometric") Isometric();
             scene.camera.axis.y = value;
             scene.requestRedraw();
         });
-        gui.add(controls, 'axis_toggle').name("mouse control").onChange(function(value) {
+        gui.add(controls, 'axis_toggle').name("&nbsp;&nbsp;mouse control").onChange(function(value) {
             if (value && scene.camera.type != "isometric") {
                 gui.__controllers[4].setValue(false);
                 Isometric();
             }
             axis_mouse = value;
         });
-        gui.add(controls, 'Flat');
+        gui.add(controls, 'Flat').name("Flat Camera");
+
+
     }
 
 
