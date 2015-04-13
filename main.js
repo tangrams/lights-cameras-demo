@@ -54,28 +54,45 @@
     window.addEventListener('resize', resizeMap);
     resizeMap();
 
-    function Perspective() {
-        scene.config.cameras.camera1.type = "perspective";
-        scene.updateConfig();
+    function setCamera(type) {
+        if (scene.camera.type != type) {
+            scene.config.cameras.camera1.type = type;
+            scene.updateConfig();
+            switch(type) {
+                case "perspective":
+                    gui.__controllers[8].setValue(false);
+                    scene.camera.focal_length = gui.__controllers[1].getValue();
+                    break;
+                case "isometric":
+                    gui.__controllers[4].setValue(false);
+                    break;
+            }
+        }
     }
-    function Isometric() {
-        scene.config.cameras.camera1.type = "isometric";
-        scene.updateConfig();
-    }
-    function Flat() {
-        scene.config.cameras.camera1.type = "flat";
-        scene.updateConfig();
+    function setLight(type) {
+        if (scene.lights.light1.type != type) {
+            scene.config.lights.light1.type = type;
+            scene.updateConfig();
+            switch(type) {
+                case "directional":
+                    gui.__controllers[23].setValue(false);
+                    break;
+                case "point":
+                    gui.__controllers[16].setValue(false);
+                    break;
+            }
+        }
     }
     // GUI options for rendering modes/effects
     var controls = {
         'Perspective' : function() {
-            Perspective();
+            setCamera("perspective");
         },
         'Isometric' : function() {
-            Isometric();
+            setCamera("isometric");
         },
         'Flat' : function() {
-            Flat();
+            setCamera("flat");
         },
         'focal_length' : 2,
         'axis_x' : 0,
@@ -84,61 +101,163 @@
         'vanishing_point_x' : 0,
         'vanishing_point_y' : 0,
         'vanishing_point_toggle' : false,
+        'Directional' : function() {
+            setLight("directional");
+        },
+        'direction_x' : 0,
+        'direction_y' : 1,
+        'direction_z' : 0,
+        'direction_toggle' : false,
+        'direction_diffuse' : 1,
+        'direction_ambient' : .3,
+        'Point' : function() {
+            setLight("point");
+        },
+        'point_x' : 0,
+        'point_y' : 0,
+        'point_z' : 0,
+        'point_toggle' : false,
+        'point_diffuse' : 1,
+        'point_ambient' : .3,
+        'attenuation' : .3,
+        'radius_inner' : 0,
+        'radius_outer' : 0,
 
     };
     var vanishing_point_mouse = false;
     var axis_mouse = false;
+    var directional_mouse = false;
+    var point_mouse = false;
     // Create dat GUI
-    var gui = new dat.GUI({ autoPlace: true, width: 275 });
+    var gui = new dat.GUI({ autoPlace: true, width: 300 });
     function addGUI () {
         gui.domElement.parentNode.style.zIndex = 5;
         window.gui = gui;
         var folder = gui.addFolder("Click a style:");
         folder.open(); // this just points the arrow downward
-        // Styles
+
+        // CAMERAS 
         gui.add(controls, 'Perspective').name("Perspective Camera");
         gui.add(controls, 'focal_length', 0.1, 5).name("&nbsp;&nbsp;focal_length").onChange(function(value) {
-            if (scene.camera.type != "perspective") Perspective();
+            setCamera("perspective");
             scene.camera.focal_length = value;
             scene.requestRedraw();
         });
         gui.add(controls, 'vanishing_point_x', -1000, 1000).name("&nbsp;&nbsp;vanishing_point x").onChange(function(value) {
-            if (scene.camera.type != "perspective") Perspective();
+            setCamera("perspective");
             scene.camera.vanishing_point[0] = value;
             scene.requestRedraw();
         });
         gui.add(controls, 'vanishing_point_y', -1000, 1000).name("&nbsp;&nbsp;vanishing_point y").onChange(function(value) {
-            if (scene.camera.type != "perspective") Perspective();
+            setCamera("perspective");
             scene.camera.vanishing_point[1] = value;
             scene.requestRedraw();
         });
         gui.add(controls, 'vanishing_point_toggle').name("&nbsp;&nbsp;mouse control").onChange(function(value) {
-            if (value && scene.camera.type != "perspective") {
-                gui.__controllers[8].setValue(false);
-                Perspective();
-                scene.camera.focal_length = gui.__controllers[1].getValue();
+            if (value) {
+                setCamera("perspective");
             }
             vanishing_point_mouse = value;
         });
         gui.add(controls, 'Isometric').name("Isometric Camera");
         gui.add(controls, 'axis_x', -5, 5).name("&nbsp;&nbsp;axis x").onChange(function(value) {
-            if (scene.camera.type != "isometric") Isometric();
+            setCamera("isometric");
             scene.camera.axis.x = value;
             scene.requestRedraw();
         });
         gui.add(controls, 'axis_y', -5, 5).name("&nbsp;&nbsp;axis y").onChange(function(value) {
-            if (scene.camera.type != "isometric") Isometric();
+            setCamera("isometric");
             scene.camera.axis.y = value;
             scene.requestRedraw();
         });
         gui.add(controls, 'axis_toggle').name("&nbsp;&nbsp;mouse control").onChange(function(value) {
-            if (value && scene.camera.type != "isometric") {
-                gui.__controllers[4].setValue(false);
-                Isometric();
+            if (value) {
+                setCamera("isometric");
             }
             axis_mouse = value;
         });
         gui.add(controls, 'Flat').name("Flat Camera");
+
+        // LIGHTS
+        gui.add(controls, 'Directional').name("Directional Light");
+        gui.add(controls, 'direction_x', -1, 1).name("&nbsp;&nbsp;direction x").onChange(function(value) {
+            setLight("directional");
+            scene.lights.light1.direction[0] = value;
+            scene.requestRedraw();
+        });
+        gui.add(controls, 'direction_y', -1, 1).name("&nbsp;&nbsp;direction y").onChange(function(value) {
+            setLight("directional");
+            scene.lights.light1.direction[1] = value;
+            scene.requestRedraw();
+        });
+        gui.add(controls, 'direction_z', -1, 1).name("&nbsp;&nbsp;direction z").onChange(function(value) {
+            setLight("directional");
+            scene.lights.light1.direction[2] = value;
+            scene.requestRedraw();
+        });
+        gui.add(controls, 'direction_toggle').name("&nbsp;&nbsp;mouse control").onChange(function(value) {
+            if (value) {
+                setLight("directional");
+            }
+            directional_mouse = value;
+        });
+        gui.add(controls, 'direction_diffuse', 0, 2).name("&nbsp;&nbsp;diffuse").onChange(function(value) {
+            setLight("directional");
+            scene.lights.light1.diffuse = [value, value, value, 1];
+            scene.requestRedraw();
+        });
+        gui.add(controls, 'direction_ambient', 0, 1).name("&nbsp;&nbsp;ambient").onChange(function(value) {
+            setLight("directional");
+            scene.lights.light1.ambient = [value, value, value, 1];
+            scene.requestRedraw();
+        });
+        gui.add(controls, 'Point').name("Point Light");
+        gui.add(controls, 'point_x', -1000, 1000).name("&nbsp;&nbsp;point x").onChange(function(value) {
+            setLight("point");
+            scene.lights.light1.position[0] = value+"px";
+            scene.requestRedraw();
+        });
+        gui.add(controls, 'point_y', -1000, 1000).name("&nbsp;&nbsp;point y").onChange(function(value) {
+            setLight("point");
+            scene.lights.light1.position[1] = value+"px";
+            scene.requestRedraw();
+        });
+        gui.add(controls, 'point_z', -1000, 1000).name("&nbsp;&nbsp;point z").onChange(function(value) {
+            setLight("point");
+            scene.lights.light1.position[2] = value+"px";
+            scene.requestRedraw();
+        });
+        gui.add(controls, 'point_toggle').name("&nbsp;&nbsp;mouse control").onChange(function(value) {
+            if (value) {
+                setLight("point");
+            }
+            point_mouse = value;
+        });
+        gui.add(controls, 'point_diffuse', 0, 2).name("&nbsp;&nbsp;diffuse").onChange(function(value) {
+            setLight("point");
+            scene.lights.light1.diffuse = [value, value, value, 1];
+            scene.requestRedraw();
+        });
+        gui.add(controls, 'point_ambient', 0, 1).name("&nbsp;&nbsp;ambient").onChange(function(value) {
+            setLight("point");
+            scene.lights.light1.ambient = [value, value, value, 1];
+            scene.requestRedraw();
+        });
+        gui.add(controls, 'attenuation', 0, 10).name("&nbsp;&nbsp;attenuation").onChange(function(value) {
+            setLight("point");
+            scene.lights.light1.attenuation = value;
+            scene.requestRedraw();
+        });
+        gui.add(controls, 'radius_inner', 0, 500).name("&nbsp;&nbsp;radius_inner").onChange(function(value) {
+            setLight("point");
+            scene.lights.light1.radius = [value+"px", scene.lights.light1.radius[1]];
+            scene.requestRedraw();
+        });
+        gui.add(controls, 'radius_outer', 0, 500).name("&nbsp;&nbsp;radius_outer").onChange(function(value) {
+            setLight("point");
+            scene.lights.light1.radius = [scene.lights.light1.radius[0], value+"px"];
+            scene.requestRedraw();
+        });
 
 
     }
@@ -154,7 +273,10 @@
         var y = e.clientY;
         var xpos = ((x - (width / 2)));
         var ypos = ((y - (height / 2)))*-1.;
-        console.log("width:", width, "x:", x, "xpos:", xpos);
+        var xpercent = x/width * 2. - 1.;
+        var ypercent = y/height * 2. - 1.;
+
+        // console.log("height:", height, "y:", y, "ypos:", ypos, "ypercent:", ypercent);
 
         if (vanishing_point_mouse) {
             scene.camera.vanishing_point = [xpos,ypos];
@@ -168,6 +290,20 @@
             gui.__controllers[7].setValue(scene.camera.axis.y);
             scene.requestRedraw();
         }
+        if (directional_mouse) {
+            scene.lights.light1.direction = [xpercent,ypercent*-1,scene.lights.light1.direction[2]];
+            gui.__controllers[11].setValue(scene.lights.light1.direction[0]);
+            gui.__controllers[12].setValue(scene.lights.light1.direction[1]);
+            scene.requestRedraw();
+        }
+        if (point_mouse) {
+            scene.lights.light1.position = [xpos,ypos,scene.lights.light1.position[2]];
+            gui.__controllers[18].setValue(scene.lights.light1.position[0]);
+            gui.__controllers[19].setValue(scene.lights.light1.position[1]);
+            scene.requestRedraw();
+        }
+        // console.log(scene.lights.light1.position);
+
     }
 
     window.onload = function() {
