@@ -60,11 +60,11 @@
             scene.updateConfig();
             switch(type) {
                 case "perspective":
-                    gui.__controllers[8].setValue(false);
-                    scene.camera.focal_length = gui.__controllers[1].getValue();
+                    controllerByName("axis_toggle").setValue(false);
+                    scene.camera.focal_length = controllerByName("focal_length").getValue();
                     break;
                 case "isometric":
-                    gui.__controllers[4].setValue(false);
+                    controllerByName("vanishing_point_toggle").setValue(false);
                     break;
             }
         }
@@ -72,17 +72,28 @@
     function setLight(type) {
         if (scene.lights.light1.type != type) {
             scene.config.lights.light1.type = type;
+            scene.config.cameras.camera1.focal_length = controllerByName("focal_length").getValue();
             scene.updateConfig();
             switch(type) {
                 case "directional":
-                    gui.__controllers[23].setValue(false);
-                    break;
+                    controllerByName("point_toggle").setValue(false);
                 case "point":
-                    gui.__controllers[16].setValue(false);
-                    break;
+                    controllerByName("direction_toggle").setValue(false);
+                    scene.config.lights.light1.radius = [controllerByName("radius_inner").getValue()+"px", controllerByName("radius_outer").getValue()+"px"];
+                    scene.config.lights.light1.attenuation = controllerByName("attenuation").getValue();
+                    scene.updateConfig();
             }
         }
     }
+
+    function controllerByName(which) {
+        for (var i = 0; i < gui.__controllers.length; i++) {
+            if (gui.__controllers[i].property == which) {
+                return gui.__controllers[i];
+            }
+        }
+    }
+
     // GUI options for rendering modes/effects
     var controls = {
         'Perspective' : function() {
@@ -115,13 +126,13 @@
         },
         'point_x' : 0,
         'point_y' : 0,
-        'point_z' : 0,
+        'point_z' : 50,
         'point_toggle' : false,
         'point_diffuse' : 1,
-        'point_ambient' : .3,
-        'attenuation' : .3,
-        'radius_inner' : 0,
-        'radius_outer' : 0,
+        'point_ambient' : .5,
+        'attenuation' : 2,
+        'radius_inner' : 100,
+        'radius_outer' : 250,
 
     };
     var vanishing_point_mouse = false;
@@ -250,12 +261,12 @@
         });
         gui.add(controls, 'radius_inner', 0, 500).name("&nbsp;&nbsp;radius_inner").onChange(function(value) {
             setLight("point");
-            scene.lights.light1.radius = [value+"px", scene.lights.light1.radius[1]];
+            scene.lights.light1.radius = [value+"px", (scene.lights.light1.radius === null) ? 0 : scene.lights.light1.radius[1]];
             scene.requestRedraw();
         });
         gui.add(controls, 'radius_outer', 0, 500).name("&nbsp;&nbsp;radius_outer").onChange(function(value) {
             setLight("point");
-            scene.lights.light1.radius = [scene.lights.light1.radius[0], value+"px"];
+            scene.lights.light1.radius = [(scene.lights.light1.radius === null) ? 0 : scene.lights.light1.radius[0], value+"px"];
             scene.requestRedraw();
         });
 
@@ -275,8 +286,6 @@
         var ypos = ((y - (height / 2)))*-1.;
         var xpercent = x/width * 2. - 1.;
         var ypercent = y/height * 2. - 1.;
-
-        // console.log("height:", height, "y:", y, "ypos:", ypos, "ypercent:", ypercent);
 
         if (vanishing_point_mouse) {
             scene.camera.vanishing_point = [xpos,ypos];
@@ -302,7 +311,6 @@
             gui.__controllers[19].setValue(scene.lights.light1.position[1]);
             scene.requestRedraw();
         }
-        // console.log(scene.lights.light1.position);
 
     }
 
