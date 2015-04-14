@@ -73,6 +73,7 @@
         if (scene.lights.light1.type != type) {
             scene.config.lights.light1.type = type;
             scene.config.cameras.camera1.focal_length = controllerByName("focal_length").getValue();
+            scene.config.cameras.camera1.axis = {x: controllerByName("axis_x").getValue(), y: controllerByName("axis_y").getValue()};
             scene.updateConfig();
             switch(type) {
                 case "directional":
