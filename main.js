@@ -57,6 +57,8 @@
     function setCamera(type) {
         if (scene.camera.type != type) {
             scene.config.cameras.camera1.type = type;
+            scene.config.lights.light1.radius = [controllerByName("radius_inner").getValue()+"px", controllerByName("radius_outer").getValue()+"px"];
+            scene.config.lights.light1.attenuation = controllerByName("attenuation").getValue();
             scene.updateConfig();
             switch(type) {
                 case "perspective":
