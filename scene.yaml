@@ -10,7 +10,6 @@ lights:
         direction: [0, 1, -.5]
         diffuse: 1
         ambient: .5
-        # type: point
         position: [0, 0, 50]
         origin: ground
         attenuation: 2
@@ -39,7 +38,6 @@ layers:
             polygons:
                 order: 1
                 color: '#aaffaa'
-                interactive: true
 
     water:
         data:
@@ -54,6 +52,9 @@ layers:
         data:
             source: osm
             layer: roads
+        filter:
+            # don't show rail tunnels
+            not: { all: [kind: rail, is_tunnel: yes] }
         draw:
             lines:
                 order: 3
@@ -76,12 +77,6 @@ layers:
             draw:
                 lines:
                     color: tan
-            rail:
-                filter:
-                    kind: rail
-                draw:
-                    lines:
-                        width: 0
         minor_road:
             filter:
                 kind: minor_road
@@ -112,6 +107,7 @@ layers:
         draw:
             polygons:
                 order: 4
+                # color taller buildings brighter
                 color: |
                     function () {
                         var h = feature.height || 20;
