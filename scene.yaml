@@ -55,6 +55,8 @@ layers:
         filter:
             # don't show rail tunnels
             not: { all: [kind: rail, is_tunnel: yes] }
+            # or ferry routes
+            not: { kind: ferry }
         draw:
             lines:
                 order: 3
