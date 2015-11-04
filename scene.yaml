@@ -14,7 +14,9 @@ lights:
         origin: ground
         attenuation: 2
         radius: [100, 250]
-
+scene:
+    background:
+        color: black
 sources:
     osm:
         type: TopoJSON
