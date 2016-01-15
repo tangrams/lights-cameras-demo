@@ -4,13 +4,7 @@
 (function () {
     'use strict';
 
-    var locations = {
-        'London': [51.508, -0.105, 15],
-        'New York': [40.70531887544228, -74.00976419448853, 15],
-        'Seattle': [47.609722, -122.333056, 15]
-    };
-
-    var map_start_location = locations['New York'];
+    var map_start_location = [40.7238, -73.9881, 14]; // NYC
 
     /*** URL parsing ***/
 
