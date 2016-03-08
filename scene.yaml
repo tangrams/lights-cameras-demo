@@ -30,7 +30,7 @@ layers:
             layer: earth
         draw:
             polygons:
-                order: 0
+                order: function() { return feature.sort_key; }
                 color: '#ddeeee'
     landuse:
         data:
@@ -38,7 +38,7 @@ layers:
             layer: landuse
         draw:
             polygons:
-                order: 1
+                order: function() { return feature.sort_key; }
                 color: '#aaffaa'
 
     water:
@@ -47,7 +47,7 @@ layers:
             layer: water
         draw:
             polygons:
-                order: 2
+                order: function() { return feature.sort_key; }
                 color: '#88bbee'
 
     roads:
@@ -61,7 +61,7 @@ layers:
             not: { kind: ferry }
         draw:
             lines:
-                order: 3
+                order: function() { return feature.sort_key; }
                 color: gray    
                 width: 8
         highway:
@@ -72,6 +72,7 @@ layers:
                     color: '#cc6666'
                     width: 12
                 outline:
+                    order: 352 # magic number
                     style: lines
                     color: grey
                     width: 15
@@ -103,14 +104,14 @@ layers:
                 lines:
                     color: pink
                     width: 3
-    
+
     buildings:
         data:
             source: osm
             layer: buildings
         draw:
             polygons:
-                order: 4
+                order: function() { return feature.sort_key; }
                 # color taller buildings brighter
                 color: |
                     function () {
