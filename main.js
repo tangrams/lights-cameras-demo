@@ -4,7 +4,7 @@
 (function () {
     'use strict';
 
-    var map_start_location = [40.7238, -73.9881, 16]; // NYC
+    var map_start_location = [40.7064, -74.0088, 16]; // NYC
 
     /*** URL parsing ***/
 
