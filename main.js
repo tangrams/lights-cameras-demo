@@ -49,7 +49,7 @@
     resizeMap();
 
     function setCamera(type) {
-        if (scene.camera.type != type) {
+        if (scene.view.camera.type != type) {
             scene.config.cameras.camera1.type = type;
             scene.config.lights.light1.radius = [controllerByName("radius_inner").getValue()+"px", controllerByName("radius_outer").getValue()+"px"];
             scene.config.lights.light1.attenuation = controllerByName("attenuation").getValue();
@@ -57,7 +57,7 @@
             switch(type) {
                 case "perspective":
                     controllerByName("axis_toggle").setValue(false);
-                    scene.camera.focal_length = controllerByName("focal_length").getValue();
+                    scene.view.camera.focal_length = controllerByName("focal_length").getValue();
                     break;
                 case "isometric":
                     controllerByName("vanishing_point_toggle").setValue(false);
@@ -148,17 +148,17 @@
         gui.add(controls, 'Perspective').name("Perspective Camera");
         gui.add(controls, 'focal_length', 0.1, 5).name("&nbsp;&nbsp;focal_length").onChange(function(value) {
             setCamera("perspective");
-            scene.camera.focal_length = value;
+            scene.view.camera.focal_length = value;
             scene.requestRedraw();
         });
         gui.add(controls, 'vanishing_point_x', -1000, 1000).name("&nbsp;&nbsp;vanishing_point x").onChange(function(value) {
             setCamera("perspective");
-            scene.camera.vanishing_point[0] = value;
+            scene.view.camera.vanishing_point[0] = value;
             scene.requestRedraw();
         });
         gui.add(controls, 'vanishing_point_y', -1000, 1000).name("&nbsp;&nbsp;vanishing_point y").onChange(function(value) {
             setCamera("perspective");
-            scene.camera.vanishing_point[1] = value;
+            scene.view.camera.vanishing_point[1] = value;
             scene.requestRedraw();
         });
         gui.add(controls, 'vanishing_point_toggle').name("&nbsp;&nbsp;mouse control").onChange(function(value) {
@@ -170,12 +170,12 @@
         gui.add(controls, 'Isometric').name("Isometric Camera");
         gui.add(controls, 'axis_x', -5, 5).name("&nbsp;&nbsp;axis x").onChange(function(value) {
             setCamera("isometric");
-            scene.camera.axis.x = value;
+            scene.view.camera.axis.x = value;
             scene.requestRedraw();
         });
         gui.add(controls, 'axis_y', -5, 5).name("&nbsp;&nbsp;axis y").onChange(function(value) {
             setCamera("isometric");
-            scene.camera.axis.y = value;
+            scene.view.camera.axis.y = value;
             scene.requestRedraw();
         });
         gui.add(controls, 'axis_toggle').name("&nbsp;&nbsp;mouse control").onChange(function(value) {
@@ -285,15 +285,15 @@
         var ypercent = y/height * 2. - 1.;
 
         if (vanishing_point_mouse) {
-            scene.camera.vanishing_point = [xpos,ypos];
-            gui.__controllers[2].setValue(scene.camera.vanishing_point[0]);
-            gui.__controllers[3].setValue(scene.camera.vanishing_point[1]);
+            scene.view.camera.vanishing_point = [xpos,ypos];
+            gui.__controllers[2].setValue(scene.view.camera.vanishing_point[0]);
+            gui.__controllers[3].setValue(scene.view.camera.vanishing_point[1]);
             scene.requestRedraw();
         }
         if (axis_mouse) {
-            scene.camera.axis = {x: xpos/(width/5), y: ypos/(height/5)};
-            gui.__controllers[6].setValue(scene.camera.axis.x);
-            gui.__controllers[7].setValue(scene.camera.axis.y);
+            scene.view.camera.axis = {x: xpos/(width/5), y: ypos/(height/5)};
+            gui.__controllers[6].setValue(scene.view.camera.axis.x);
+            gui.__controllers[7].setValue(scene.view.camera.axis.y);
             scene.requestRedraw();
         }
         if (directional_mouse) {
