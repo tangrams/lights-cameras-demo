@@ -18,7 +18,7 @@ scene:
     background:
         color: black
 sources:
-    osm:
+    mapzen:
         type: TopoJSON
         url:  https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
         url_params:
@@ -28,7 +28,7 @@ sources:
 layers:
     earth:
         data:
-            source: osm
+            source: mapzen
             layer: earth
         draw:
             polygons:
@@ -36,7 +36,7 @@ layers:
                 color: '#ddeeee'
     landuse:
         data:
-            source: osm
+            source: mapzen
             layer: landuse
         draw:
             polygons:
@@ -45,7 +45,7 @@ layers:
 
     water:
         data:
-            source: osm
+            source: mapzen
             layer: water
         draw:
             polygons:
@@ -54,7 +54,7 @@ layers:
 
     roads:
         data:
-            source: osm
+            source: mapzen
             layer: roads
         filter:
             # don't show rail tunnels
@@ -109,7 +109,7 @@ layers:
 
     buildings:
         data:
-            source: osm
+            source: mapzen
             layer: buildings
         draw:
             polygons:
