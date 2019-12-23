@@ -74,11 +74,9 @@ layers:
                 lines:
                     color: '#cc6666'
                     width: 12
-                outline:
-                    order: 352 # magic number
-                    style: lines
-                    color: grey
-                    width: 15
+                    outline:
+                        color: grey
+                        width: 1.5
         tunnel:
             filter:
                 is_tunnel: yes
