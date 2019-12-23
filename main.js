@@ -53,16 +53,16 @@
             scene.config.cameras.camera1.type = type;
             scene.config.lights.light1.radius = [controllerByName("radius_inner").getValue()+"px", controllerByName("radius_outer").getValue()+"px"];
             scene.config.lights.light1.attenuation = controllerByName("attenuation").getValue();
-            scene.updateConfig();
             switch(type) {
                 case "perspective":
                     controllerByName("axis_toggle").setValue(false);
-                    scene.view.camera.focal_length = controllerByName("focal_length").getValue();
+                    scene.config.cameras.camera1.focal_length = controllerByName("focal_length").getValue();
                     break;
                 case "isometric":
                     controllerByName("vanishing_point_toggle").setValue(false);
                     break;
             }
+            scene.updateConfig();
         }
     }
     function setLight(type) {
@@ -148,8 +148,8 @@
         gui.add(controls, 'Perspective').name("Perspective Camera");
         gui.add(controls, 'focal_length', 0.1, 5).name("&nbsp;&nbsp;focal_length").onChange(function(value) {
             setCamera("perspective");
-            scene.view.camera.focal_length = value;
-            scene.requestRedraw();
+            scene.config.cameras.camera1.focal_length = value;
+            scene.updateConfig();
         });
         gui.add(controls, 'vanishing_point_x', -1000, 1000).name("&nbsp;&nbsp;vanishing_point x").onChange(function(value) {
             setCamera("perspective");
@@ -211,12 +211,12 @@
         });
         gui.add(controls, 'direction_diffuse', 0, 2).name("&nbsp;&nbsp;diffuse").onChange(function(value) {
             setLight("directional");
-            scene.lights.light1.diffuse = [value, value, value, 1];
+            scene.lights.light1.diffuse = [value, value, value];
             scene.requestRedraw();
         });
         gui.add(controls, 'direction_ambient', 0, 1).name("&nbsp;&nbsp;ambient").onChange(function(value) {
             setLight("directional");
-            scene.lights.light1.ambient = [value, value, value, 1];
+            scene.lights.light1.ambient = [value, value, value];
             scene.requestRedraw();
         });
         gui.add(controls, 'Point').name("Point Light");
@@ -243,12 +243,12 @@
         });
         gui.add(controls, 'point_diffuse', 0, 2).name("&nbsp;&nbsp;diffuse").onChange(function(value) {
             setLight("point");
-            scene.lights.light1.diffuse = [value, value, value, 1];
+            scene.lights.light1.diffuse = [value, value, value];
             scene.requestRedraw();
         });
         gui.add(controls, 'point_ambient', 0, 1).name("&nbsp;&nbsp;ambient").onChange(function(value) {
             setLight("point");
-            scene.lights.light1.ambient = [value, value, value, 1];
+            scene.lights.light1.ambient = [value, value, value];
             scene.requestRedraw();
         });
         gui.add(controls, 'attenuation', 0, 10).name("&nbsp;&nbsp;attenuation").onChange(function(value) {
